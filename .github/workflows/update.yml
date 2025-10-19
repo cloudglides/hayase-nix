@@ -8,8 +8,9 @@ on:
     branches:
       - main
     paths:
-      - 'hayase.nix'
-      - '.github/workflows/update-hayase.yml'
+      - 'package.nix'
+      - 'flake.nix'
+      - '.github/workflows/update.yml'
 
 jobs:
   check-and-update:
@@ -35,7 +36,7 @@ jobs:
       - name: Check current version
         id: current_version
         run: |
-          CURRENT=$(grep 'version = ' hayase.nix | sed 's/.*"\(.*\)".*/\1/')
+          CURRENT=$(grep 'version = ' package.nix | sed 's/.*"\(.*\)".*/\1/')
           echo "version=$CURRENT" >> $GITHUB_OUTPUT
 
       - name: Compare versions
@@ -61,19 +62,19 @@ jobs:
           echo "hash=$HASH" >> $GITHUB_OUTPUT
           rm hayase.AppImage
 
-      - name: Update hayase.nix
+      - name: Update package.nix
         if: steps.compare.outputs.needs_update == 'true'
         run: |
           VERSION="${{ steps.latest_release.outputs.version }}"
           HASH="${{ steps.download.outputs.hash }}"
           
-          sed -i "s/version = \".*\";/version = \"$VERSION\";/" hayase.nix
-          sed -i "s|hash = \"sha256-.*\";|hash = \"$HASH\";|" hayase.nix
+          sed -i "s/version = \".*\";/version = \"$VERSION\";/" package.nix
+          sed -i "s|hash = \"sha256-.*\";|hash = \"$HASH\";|" package.nix
 
       - name: Test build
         if: steps.compare.outputs.needs_update == 'true'
         run: |
-          nix-build --impure
+          nix build .#default
 
       - name: Create Pull Request
         if: steps.compare.outputs.needs_update == 'true'
