@@ -1,8 +1,8 @@
 name: Update Hayase Package
 
 on:
-  schedule:
-    - cron: '0 2 * * *'
+  release:
+    types: [published]
   workflow_dispatch: # Allow manual trigger
   push:
     branches:
