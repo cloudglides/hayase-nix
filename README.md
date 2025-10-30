@@ -1,3 +1,6 @@
+This project is no longer maintained because the upstream repository was taken down due to a DMCA notice.
+As a result, I won’t be updating or supporting this repo anymore.
+
 # Hayase Nix Flake
 
 This repository packages the upstream [Hayase](https://hayase.watch) AppImage for use with Nix. The flake exports a `hayase` package and an overlay that you can import into other flakes.
